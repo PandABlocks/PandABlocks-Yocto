@@ -29,6 +29,11 @@ $ podman --help
 ```
 Or go to the official website: [podman.io](https://podman.io)
 
+Finally, disable the SELinux security context check for host folders mounted on the container with this command:
+```bash
+$ sed -i ~/.config/containers/containers.conf -e '/label=false/d' -e /^\[containers\]$/a label=false'
+```
+
 ## Yocto Installation
 
 ## Usage
