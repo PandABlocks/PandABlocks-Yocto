@@ -16,10 +16,14 @@ If successful, you should see the freshly baked image's name with the command:
 ```bash
 $ podman image ls
 ```
+Finally, disable the SELinux security context check for host folders mounted on the container with this command:
+```bash
+$ sed -i ~/.config/containers/containers.conf -e '/label=false/d' -e '/^\[containers\]$/a label=false'
+```
 Startup a container based on the image listed using the following command:
 ```bash
 $ podman --storage-opt overlay.mount_program=/usr/bin/fuse-overlayfs --storage-opt \
- overlay.mountopt=nodev,metacopy=on, noxattrs=1 run -v /scratch/tmp:/scratch/tmp -v /dev/:/dev \
+overlay.mountopt=nodev,metacopy=on,noxattrs=1 run -v /scratch/tmp:/scratch/tmp -v /dev/:/dev \
 -i -t localhost/rocky9-yocto-dev-container:latest /bin/bash
 ```
 
@@ -29,10 +33,6 @@ $ podman --help
 ```
 Or go to the official website: [podman.io](https://podman.io)
 
-Finally, disable the SELinux security context check for host folders mounted on the container with this command:
-```bash
-$ sed -i ~/.config/containers/containers.conf -e '/label=false/d' -e /^\[containers\]$/a label=false'
-```
 
 ## Yocto Installation
 

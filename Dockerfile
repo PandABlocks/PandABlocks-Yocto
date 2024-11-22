@@ -27,6 +27,7 @@ RUN yum -y upgrade && yum -y install \
     lz4 \
     make \
     man \
+	ncurses-compat-libs \
     patch \
     perl \
     perl-bignum \
