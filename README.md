@@ -67,7 +67,7 @@ BB_NUMBER_OF_THREADS="<your_pc_virtual_thread_count_or_less>"
 PARALLEL_MAKE="-j<your_pc_virtual_thread_count_or_less>"
 #On Diamond's PC - ws575, AMD thread ripper (32 cores), the above configurations are defined as:
 # BB_NUMBER_OF_THREADS = "31"
-# PARALLEL_MAKE = "-J31"
+# PARALLEL_MAKE = "-j31"
 ```
 
 ## Contributing
