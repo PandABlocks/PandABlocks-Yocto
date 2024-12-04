@@ -27,7 +27,7 @@ $ podman --storage-opt overlay.mount_program=/usr/bin/fuse-overlayfs --storage-o
 overlay.mountopt=nodev,metacopy=on,noxattrs=1 run -v /scratch/tmp:/scratch/tmp -v /dev/:/dev \
 -i -t localhost/rocky9-yocto-dev-container:latest /bin/bash
 ```
-One a host's terminal instance, the podman option <> could be used to list containers running on the host:
+One a host's terminal instance, the podman option ***container ls*** could be used to list containers running on the host:
 ```bash
 $ podman container ls
 ```
@@ -51,7 +51,7 @@ $ useradd <new_user>
 $ usermod -a -G <new_user> root
 $ su - <new_user>
 ```
-Change directory to ***/scratch/tmp***; recall that the "Startup a container" step maps the host's ***/scratch/tmp*** to the container's ***/scratch/tmp*** directories, hence any file structure in this directory will persist on the host's ***/scratch/tmp*** even after the container is deleted. Next create a directory called ***yocto*** and change into it
+Change directory to ***/scratch/tmp*** recall that the "Startup a container" step maps the host's ***/scratch/tmp*** to the container's ***/scratch/tmp*** directories, hence any file structure in this directory will persist on the host's ***/scratch/tmp*** even after the container is deleted. Next create a directory called ***yocto*** and change into it
 ```bash
 $ cd /scratch/tmp
 $ mkdir -p yocto && cd yocto
