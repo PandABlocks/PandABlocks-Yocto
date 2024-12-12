@@ -63,7 +63,7 @@ NB:
 2. Add ***/scratch/tmp*** to the ***$PATH*** 'directory search list' within the container.
 3. Insert the following configuration macros to the ***/scratch/tmp/yocto/build/conf/local.conf*** file to limit the parallel build tasks and threads spawn during the kernel image and other boot recipe's build process:
 ```bash
-BB_NUMBER_OF_THREADS="<your_pc_virtual_thread_count_or_less>"
+BB_NUMBER_THREADS="<your_pc_virtual_thread_count_or_less>"
 PARALLEL_MAKE="-j<your_pc_virtual_thread_count_or_less>"
 #On Diamond's PC - ws575, AMD thread ripper (32 cores), the above configurations are defined as:
 # BB_NUMBER_OF_THREADS = "31"
