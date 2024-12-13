@@ -23,7 +23,7 @@ Finally, disable the SELinux security context check for host folders mounted on 
 $ sed -i ~/.config/containers/containers.conf -e '/label=false/d' -e '/^\[containers\]$/a label=false'
 ```
 Start up a container based on the image listed. \
-Note: Where **container-image-tagname** is the container name. \
+Note: Where ***container-image-tagname*** is the container name. \
 Using the following command:
 ```bash
 $ podman --storage-opt overlay.mount_program=/usr/bin/fuse-overlayfs --storage-opt \
