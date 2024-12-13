@@ -9,7 +9,8 @@ To create the image on **your host Linux machine**, clone this repository:
 $ cd /scratch/<FedID>/
 $ git clone git@github.com:PandABlocks/PandABlocks-Yocto.git
 ```
-$ Run ***podman*** to create the image NOTE: Where **<container-image-tagname>** is the container name:
+$ Run ***podman*** to create the image. \
+NOTE: Where **<container-image-tagname>** is the container name:
 ```bash
 $ podman build --file <path_to_Dockerfile>/Dockerfile --tag <container-image-tag-name>:latest
 ```
@@ -21,8 +22,8 @@ Finally, disable the SELinux security context check for host folders mounted on 
 ```bash
 $ sed -i ~/.config/containers/containers.conf -e '/label=false/d' -e '/^\[containers\]$/a label=false'
 ```
-Startup a container based on the image listed \ 
-NOTE: Where **<container-image-tagname>** is the container name. \
+Startup a container based on the image listed. \
+Note: Where **<container-image-tagname>** is the container name. \
 Using the following command:
 ```bash
 $ podman --storage-opt overlay.mount_program=/usr/bin/fuse-overlayfs --storage-opt \
