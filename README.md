@@ -9,9 +9,9 @@ To create the image on **your host Linux machine**, clone this repository:
 $ cd /scratch/<FedID>/
 $ git clone git@github.com:PandABlocks/PandABlocks-Yocto.git
 ```
-$ Run ***podman*** to create the image:
+$ Run ***podman*** to create the image NOTE: Where ***<container-image-tagname>*** is the container name:
 ```bash
-$ podman build --file <path_to_Dockerfile>/Dockerfile --tag rocky9-yocto-container:latest
+$ podman build --file <path_to_Dockerfile>/Dockerfile --tag <container-image-tag-name>:latest
 ```
 If successful, you should see the freshly baked image's name with the command:
 ```bash
@@ -21,11 +21,12 @@ Finally, disable the SELinux security context check for host folders mounted on 
 ```bash
 $ sed -i ~/.config/containers/containers.conf -e '/label=false/d' -e '/^\[containers\]$/a label=false'
 ```
-Startup a container based on the image listed using the following command:
+Startup a container based on the image listed NOTE: Where ***<container-image-tagname>*** is the container name
+Using the following command:
 ```bash
 $ podman --storage-opt overlay.mount_program=/usr/bin/fuse-overlayfs --storage-opt \
 overlay.mountopt=nodev,metacopy=on,noxattrs=1 run -v /scratch/tmp:/scratch/tmp -v /dev/:/dev \
--i -t localhost/rocky9-yocto-dev-container:latest /bin/bash
+-i -t localhost/<container-image-tagname>:latest /bin/bash
 ```
 On a host's terminal instance, the podman option ***container ls*** could be used to list containers running on the host:
 ```bash
