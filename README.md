@@ -9,7 +9,7 @@ To create the image on **your host Linux machine**, clone this repository:
 $ cd /scratch/<FedID>/
 $ git clone git@github.com:PandABlocks/PandABlocks-Yocto.git
 ```
-$ Run ***podman*** to create the image NOTE: Where ***<container-image-tagname>*** is the container name:
+$ Run ***podman*** to create the image NOTE: Where **<container-image-tagname>** is the container name:
 ```bash
 $ podman build --file <path_to_Dockerfile>/Dockerfile --tag <container-image-tag-name>:latest
 ```
@@ -52,7 +52,7 @@ $ useradd <new_user>
 $ usermod -a -G <new_user> root
 $ su - <new_user>
 ```
-Change directory to ***/scratch/tmp*** recall that the "Startup a container" step maps the host's ***/scratch/tmp*** to the container's ***/scratch/tmp*** directories, hence any file structure in this directory will persist on the host's ***/scratch/tmp*** even after the container is deleted. Next create a directory called ***yocto*** and change into it
+Change the directory to ***/scratch/tmp*** recall that the "Startup a container" step maps the host's ***/scratch/tmp*** to the container's ***/scratch/tmp*** directories, hence any file structure in this directory will persist on the host's ***/scratch/tmp*** even after the container is deleted. Next, create a directory called ***yocto*** and change into it
 ```bash
 $ cd /scratch/tmp
 $ mkdir -p yocto && cd yocto
