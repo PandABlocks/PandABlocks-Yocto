@@ -113,3 +113,6 @@ RUN git config --global --add safe.directory '*'
 # Entrypoint into the container
 WORKDIR /repos
 CMD ["/bin/bash"]
+RUN useradd yocto_user -u 1000
+RUN usermod -a -G yocto_user root
+RUN su -yocto_user
