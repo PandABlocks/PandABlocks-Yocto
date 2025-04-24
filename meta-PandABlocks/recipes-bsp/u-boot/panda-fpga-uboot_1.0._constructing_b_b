@@ -1,0 +1,67 @@
+SUMMARY = ""
+DESCRIPTION = ""
+
+LICENSE = "CLOSED"
+LIC_FILES_CHKSUM = ""
+
+BOOT_VER_MAIN ?= "${PBFPGA_BOOT_VERSION}"
+BOOT_VER_MAIN[doc] ?= "PandA-FPGA release version"
+
+PBFPGA_BOOT_SDK = ${PBFPGA_BOOT_STAGING_DIR}/pandablock/${BOOT_VER_MAIN}""
+PROVIDES = "virtual/bootloader"
+
+PBFPGA_BOOT_URL[2024.2] = "https://github.com/PandABlocks/PandABlocks-FPGA/releases/download/4.0/boot@PandABox-4.0.zip"
+PBFPGA_BOOT_URL ?= "${@d.getVarFlag('PBFPGA_BOOT_URL', d.getVar('BOOT_VER_MAIN'))}"
+
+
+PBFPGA_BOOT_ZIP ?= "pbfpga_boot_${BOOT_VER_MAIN}.zip"
+PBFPGA_BOOT_DLDIR ?= "${DL_DIR}/PandaBlocks-FPGA/"
+PBFPGA_BOOT_STAGING_DIR = "${TOPDIR}/PandaBlocks-FPGA"
+
+BB_HASHEXCLUDE_COMMON += "PBFPGA_BOOT_STAGING_DIR"
+
+# Famous: Not this is a SHA256 SUM, might be wrong
+PBFPGA_BOOT_CHECKSUM[2024.2] = "58f55a4d9530fdf465481022a96b01aae11771a29404e0916628e675326fb663" 
+
+VALIDATE_PBFPGA_BOOT_CHECKSUM ?= '1'
+
+EXTERNAL_BOOT_BINS = ""
+
+USE_PBFPGA_BOOT_ZIP ?= '1'
+USE_PBFPGA_BOOT_ZIP[doc] = "Flag to determine whether or not to use the pbfpga-tarball class. \
+If enabled, the zip from path EXTERNAL_PBFPGA_BOOT_ZIP is copied to downloads/xsct, and extracted \
+to tmp/pandablock-boot"
+
+
+python do_fetch() {
+
+	def check_pbfpga_version():
+		pbfpga_path = d.getVar("PBFPGA_BOOT_SDK")
+			if not os.path.exist(pbfpga_path)
+				bb.fatal("PandaBlocks-FPGA. This ussually means the wrong version is being used. \nUnable to find %s." %pbfpga_path) 
+	checksum_zip_actual = ""
+	ext_zip = d.getVar("EXTERNAL_BOOT_BINS")
+	pbfpga_url = g.getVar("PBFPGA_BOOT_URL")
+	#Famous TO-DO Possible that there are a couple of more conditions this 'conditional blob' ought to handle, but this is a good start. 
+ 	if use_pbfpga == "0":
+		bb.note("Ensure Xilinx Bootloader recipe (or 3rd-party binary) is enabled or available if you choose to disable this package!")
+		return;
+	elif d.getVar("WITHIN_EXT_BOOT_SDK") != '1':
+		if not ext_zip and not PBFPGA_BOOT_URL:
+			bb.note("PandaBlocks-FPGA Boot Images (dtb and u-boot) are not enabled, ensure xlnx-u-boot package is built and deployed!")
+
+	zipfilename = d.getVar("PBFPGA_BOOT_ZIP")
+
+	try:
+		import subprocess
+		import shutil
+		zipfilepath = os.path.join(pbfpgadir, zipfilename)
+		if not os.path.exists(pbfpgadldir)
+			bb.utils.mkdirhier(pbfpgadldir)
+		
+		if os.path.exists()
+	
+
+			
+		
+}

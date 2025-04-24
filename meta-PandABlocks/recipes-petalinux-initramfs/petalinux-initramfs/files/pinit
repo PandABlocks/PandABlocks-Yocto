@@ -1,0 +1,89 @@
+#!/bin/sh
+
+# Make sure dynamic libraries are findable                                                                                                                        
+/sbin/ldconfig
+
+
+# Get our basic working environment up.                                                                                                                           
+mount -t devtmpfs devtmpfs /dev                                                                                                                                   
+mount -t proc proc /proc                                                                                                                                          
+mount -t sysfs sysfs /sys
+
+# This is called if something goes horribly wrong.                                                                                                                
+panic()                                                                                                                                                           
+{                                                                                                                                                                 
+    echo >&2 "$@"                                                                                                                                                 
+    echo >&2 Unable to continue                                                                                                                                   
+    set-led SYSTEM_ERR                                                                                                                                            
+    exec /bin/sh                                                                                                                                                  
+}
+
+while [ ! -e /dev/mmcblk0 ]; do                                                                                                                                   
+    echo "Waiting for /dev/mmcblk0 to appear"                                                                                                                     
+    sleep 1                                                                                                                                                       
+done 
+
+# Mounting /boot isn't altogether straightforward as the SD card may or may not                                                                                   
+# be partitioned, so we have to try both mmcblk0p1 and mmcblk0
+# TO-DO : figure out how to modify fstab                                                             
+mount /boot  || mount -t vfat /mmcblk0p1 ||                                                                                                                                                     
+mount -t vfat /dev/mmcblk0 /boot  ||                                                                                                                              
+    panic 'Unable to mount boot partition!'
+
+
+#----------------------------------------------------------------------------------------------------------------------
+# TO-DO : Add functionality to check, read and validate mac address.
+
+#format_qspi()                                                                                                                                                     
+#{                                                                                                                                                                 
+#    mountpoint -q /qspi  &&  umount /qspi                                                                                                                         
+#                                                                                                                                                                  
+#    echo Erasing QSPI                                                                                                                                             
+#    flash_erase -j -q /dev/mtd2 0 0  &&                                                                                                                           
+#    mount /qspi                                                                                                                                                   
+#}
+#*****************----------------------------------------------------------------------******************************<=
+
+
+
+
+
+# ------------------------------------------------------------------------------                                                                                  
+#                                                                                                                                                                 
+#   SD card partitioning                                                                                                                                          
+#                                                                                                                                                                 
+# Here we check for the presence of the rootfs -- if present we assume that                                                                                       
+# partitioning is good unless the file /boot/repartition exists. 
+
+need_to_partition(){
+	local repartition
+	if [-e /boot/repartition ] &&  validate_imagefile; then
+		# Enable forced repartition, but only if a rootfs imagefile is present.
+		repartition = true
+	elif mount /dev/mmcblk0p2 /rootfs  &&  [ -e /rootfs/etc/version ]
+		# There is no need to repartion
+		repartition = false
+	else
+		repartition = true
+	fi
+	mountpoint -q rootfs && umount /rootfs
+	$repartiton 
+}
+
+backup_sd_card(){
+	tar cf /tmp/boot.tar -C /boot . &&
+	umount /boot ||
+	panic 'SD card backup failed'
+}
+
+partition_sd_card(){
+	# we need to partiton in a rather strange cyliner units "255*66"
+	# blocks. Discover th device and start the partition
+	SIZE=$(cat /sys/block/mmcblk0/size)
+	CYLINDERS=$((SIZE / 255 / 63))
+	
+	
+	
+
+
+}

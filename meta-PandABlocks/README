@@ -1,0 +1,41 @@
+This README file contains information on the contents of the meta-PandABlocks layer.
+
+Please see the corresponding sections below for details.
+
+Dependencies
+============
+
+  URI: <first dependency>
+  branch: master
+
+  URI: <second dependency>
+  branch: <branch name>
+
+  .
+  .
+  .
+
+Patches
+=======
+
+Please submit any patches against the meta-PandABlocks layer to the xxxx mailing list (xxxx@zzzz.org)
+and cc: the maintainer:
+
+Maintainer: FAMOUS ALELE <famous.alele@diamond.ac.uk>
+
+Table of Contents
+=================
+
+  I. Adding the meta-PandABlocks layer to your build
+ II. Misc
+
+
+I. Adding the meta-PandABlocks layer to your build
+=================================================
+
+Run 'bitbake-layers add-layer meta-PandABlocks'
+
+II. Misc
+========
+
+--- replace with specific information about the meta-PandABlocks layer ---
