@@ -53,9 +53,10 @@ RUN yum -y upgrade && yum -y install \
 # Enable devel repo and install packages
 RUN yum install --enablerepo devel -y \
 	python3-sphinx \
-	rpcgen 
+	rpcgen \
 	perl-File-Compare \
-	perl-locale
+	perl-locale \
+	screen
 
 RUN curl -SL https://dl.rockylinux.org/pub/rocky/8/AppStream/x86_64/os/Packages/p/perl-File-Copy-2.34-473.module+el8.10.0+1616+0d20cc68.noarch.rpm -o /tmp/perl-FileCopy-2.rpm && \
     yum -y install --skip-broken /tmp/perl-FileCopy-2.rpm && \
