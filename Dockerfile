@@ -50,22 +50,16 @@ RUN yum -y upgrade && yum -y install \
     xz \
     zstd
 
-# Install rpcgen library
-RUN curl -SL https://dl.rockylinux.org/pub/rocky/8/Devel/x86_64/os/Packages/r/rpcgen-1.3.1-4.el8.x86_64.rpm -o /tmp/rpcgen-1.rpm && ls /tmp && \
-    yum -y install /tmp/rpcgen-1.rpm && \
-    rm /tmp/rpcgen-1.rpm
+# Enable devel repo and install packages
+RUN yum install --enablerepo devel -y \
+	python3-sphinx \
+	rpcgen 
+	perl-File-Compare \
+	perl-locale
 
 RUN curl -SL https://dl.rockylinux.org/pub/rocky/8/AppStream/x86_64/os/Packages/p/perl-File-Copy-2.34-473.module+el8.10.0+1616+0d20cc68.noarch.rpm -o /tmp/perl-FileCopy-2.rpm && \
     yum -y install --skip-broken /tmp/perl-FileCopy-2.rpm && \
     rm /tmp/perl-FileCopy-2.rpm
-
-RUN curl -SL https://dl.rockylinux.org/pub/rocky/8/AppStream/x86_64/os/Packages/p/perl-File-Compare-1.100.600-473.module+el8.10.0+1616+0d20cc68.noarch.rpm -o /tmp/perl-File-Compare-1.rpm && \
-    yum -y install --skip-broken /tmp/perl-File-Compare-1.rpm && \
-    rm /tmp/perl-File-Compare-1.rpm
-
-RUN curl -SL https://dl.rockylinux.org/pub/rocky/8/AppStream/x86_64/os/Packages/p/perl-locale-1.09-473.module+el8.10.0+1616+0d20cc68.noarch.rpm -o /tmp/perl-locale-1.rpm && \
-    yum -y install --skip-broken /tmp/perl-locale-1.rpm && \
-    rm /tmp/perl-locale-1.rpm
 
 # RUN curl
 
@@ -115,4 +109,4 @@ WORKDIR /repos
 CMD ["/bin/bash"]
 RUN useradd yocto_user -u 1000
 RUN usermod -a -G yocto_user root
-RUN su -yocto_user
+RUN su - yocto_user
