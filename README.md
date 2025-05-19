@@ -1,7 +1,7 @@
 
 # Yocto for PandABlocks
 This instruction guide is for setting up a Podman image to run a Rocky 9 Linux Distro.
-Based on this image, the running container would be used to set up Yocto and build a Xilinx-embedded Linux Kernel.
+Based on this image, the running container would set up Yocto with the "meta-PandABlocks" layer appended and build an embedded Xilinx Linux Kernel, rootfs, bootloader and other associated images and packages.
 
 ## Image Installation
 To create the image on **your host Linux machine**, clone this repository:
