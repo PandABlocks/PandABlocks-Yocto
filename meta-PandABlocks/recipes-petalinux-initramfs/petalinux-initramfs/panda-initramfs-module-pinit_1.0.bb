@@ -4,17 +4,17 @@
 
 SUMMARY = "PandA recipe for rootfs SD card partition"
 DESCRIPTION = "${SUMMARY}"
-#LICENSE = "MIT"
-#LIC_FILES_CHKSUM = "file://${WORKDIR}/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
-LICENSE = "CLOSED"
-LIC_FILES_CHKSUM = ""
+
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://${WORKDIR}/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 
 inherit allarch
 
 PR = "r1"
 
-# 'pinit' - PandABox Init script
+# 'pinit' - PandABlocks custom Init script
 SRC_URI = " file://pinit \
 	    file://COPYING.MIT \
 	  "
