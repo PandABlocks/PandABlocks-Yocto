@@ -1,0 +1,172 @@
+From a72bc83599ae26ac815aa946c85d2bdf26ad1019 Mon Sep 17 00:00:00 2001
+From: Ohisemega <famousalele@gmail.com>
+Date: Mon, 19 May 2025 15:03:01 +0100
+Subject: [PATCH] Initial Commit
+
+Modify top-level Makefile
+	- remove driver.ko target and related variables
+	- Add quotes around the CC variable.
+Modify server/makefile
+	- remove the "nm" command to list binary symbols of the server.
+---
+ Makefile        | 70 +++++++++++++++++++++++++------------------------
+ server/Makefile |  2 +-
+ 2 files changed, 37 insertions(+), 35 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index a4d4cca..2260ce1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -7,14 +7,14 @@ TOP := $(CURDIR)
+ 
+ BUILD_DIR = $(TOP)/build
+ PYTHON = python3
+-SPHINX_BUILD = sphinx-build
++SPHINX_BUILD =  $(PYHTON) -m sphinx-build
+ COMPILER_PREFIX = $(COMPILER_PREFIX_$(PLATFORM))
+-KERNEL_DIR = $(error Define KERNEL_DIR in CONFIG file)
+-PANDA_ROOTFS = $(error Define PANDA_ROOTFS in CONFIG file)
++# KERNEL_DIR = $(error Define KERNEL_DIR in CONFIG file)
++# PANDA_ROOTFS = $(error Define PANDA_ROOTFS in CONFIG file)
+ PLATFORM = $(error Define PLATFORM in CONFIG file)
+-MAKE_ZPKG = $(PANDA_ROOTFS)/make-zpkg
++# MAKE_ZPKG = $(PANDA_ROOTFS)/make-zpkg
+ 
+-DEFAULT_TARGETS = driver server sim_server docs zpkg
++DEFAULT_TARGETS = server sim_server docs zpkg
+ 
+ 
+ # The CONFIG file is required.  If not present, create by copying CONFIG.example
+@@ -29,14 +29,16 @@ ARCH = $(ARCH_$(PLATFORM))
+ COMPILER_PREFIX_zynq = arm-none-linux-gnueabihf
+ COMPILER_PREFIX_zynqmp = aarch64-none-linux-gnu
+ CROSS_COMPILE = $(COMPILER_PREFIX)-
+-CC = $(CROSS_COMPILE)gcc
+ 
+-DRIVER_BUILD_DIR = $(BUILD_DIR)/driver
++#do  not override CC variable, yocto has it predefined!
++# CC = $(CROSS_COMPILE)gcc
++
++# DRIVER_BUILD_DIR = $(BUILD_DIR)/driver
+ SERVER_BUILD_DIR = $(BUILD_DIR)/server
+ SIM_SERVER_BUILD_DIR = $(BUILD_DIR)/sim_server
+ DOCS_BUILD_DIR = $(BUILD_DIR)/html
+ 
+-DRIVER_FILES := $(wildcard driver/*)
++# DRIVER_FILES := $(wildcard driver/*)
+ SERVER_FILES := $(wildcard server/*)
+ 
+ ifdef TOOLCHAIN_ROOT
+@@ -58,27 +60,27 @@ export PYTHONPATH = $(TOP)/python
+ # ------------------------------------------------------------------------------
+ # Kernel driver building
+ 
+-PANDA_KO = $(DRIVER_BUILD_DIR)/panda.ko
++# PANDA_KO = $(DRIVER_BUILD_DIR)/panda.ko
+ 
+ # Building kernel modules out of tree is a headache.  The best workaround is to
+ # link all the source files into the build directory.
+-DRIVER_BUILD_FILES := $(DRIVER_FILES:driver/%=$(DRIVER_BUILD_DIR)/%)
+-$(DRIVER_BUILD_FILES): $(DRIVER_BUILD_DIR)/%: driver/%
+-	ln -s $$(readlink -e $<) $@
++# DRIVER_BUILD_FILES := $(DRIVER_FILES:driver/%=$(DRIVER_BUILD_DIR)/%)
++# $(DRIVER_BUILD_FILES): $(DRIVER_BUILD_DIR)/%: driver/%
++# 	ln -s $$(readlink -e $<) $@
+ 
+ # The driver register header file needs to be built.
+-DRIVER_HEADER = $(DRIVER_BUILD_DIR)/panda_drv.h
+-$(DRIVER_HEADER): driver/panda_drv.py $(TOP)/config_d/registers
+-	$(PYTHON) $^ >$@
++# DRIVER_HEADER = $(DRIVER_BUILD_DIR)/panda_drv.h
++# $(DRIVER_HEADER): driver/panda_drv.py $(TOP)/config_d/registers
++# 	$(PYTHON) $^ >$@
+ 
+-$(PANDA_KO): $(DRIVER_BUILD_DIR) $(DRIVER_BUILD_FILES) $(DRIVER_HEADER)
+-	CFLAGS_EXTRA=$(CFLAGS_EXTRA) $(MAKE) -C $(KERNEL_DIR) M=$< modules \
+-            ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE)
+-	touch $@
++# $(PANDA_KO): $(DRIVER_BUILD_DIR) $(DRIVER_BUILD_FILES) $(DRIVER_HEADER)
++#  	CFLAGS_EXTRA=$(CFLAGS_EXTRA) $(MAKE) -C $(KERNEL_DIR) M=$< modules \
++#             ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE)
++# 	touch $@
+ 
+ 
+-driver: $(PANDA_KO)
+-.PHONY: driver
++# driver: $(PANDA_KO)
++# .PHONY: driver
+ 
+ 
+ # ------------------------------------------------------------------------------
+@@ -98,7 +100,7 @@ MAKE_SERVER_TARGET = \
+     $(MAKE) -C $< -f $(TOP)/server/Makefile $(SERVER_BUILD_ENV)
+ 
+ $(SERVER): $(SERVER_BUILD_DIR) $(SERVER_FILES)
+-	$(MAKE_SERVER_TARGET) CC=$(CC)
++	$(MAKE_SERVER_TARGET) CC="$(CC)"
+ 
+ # Two differences with building sim_server: we use the native compiler, not the
+ # cross-compiler, and we only build the sim_server target.
+@@ -106,7 +108,7 @@ $(SIM_SERVER): $(SIM_SERVER_BUILD_DIR) $(SERVER_FILES)
+ 	$(MAKE_SERVER_TARGET) sim_server
+ 
+ $(SLOW_LOAD): $(SERVER_BUILD_DIR) server/slow_load.c
+-	$(MAKE_SERVER_TARGET) CC=$(CC) slow_load
++	$(MAKE_SERVER_TARGET) CC="$(CC)" slow_load
+ 
+ 
+ # Construction of simserver launch script.
+@@ -148,26 +150,26 @@ clean-docs:
+ # ------------------------------------------------------------------------------
+ # Build installation package
+ 
+-ZPKG_DEPENDS = $(PANDA_KO) $(SERVER) $(SLOW_LOAD) $(DOCS_BUILD_DIR)/index.html
++# ZPKG_DEPENDS = $(PANDA_KO) $(SERVER) $(SLOW_LOAD) $(DOCS_BUILD_DIR)/index.html
+ 
+-ZPKG = $(BUILD_DIR)/panda-server@$(PLATFORM)-$(GIT_VERSION).zpg
++# ZPKG = $(BUILD_DIR)/panda-server@$(PLATFORM)-$(GIT_VERSION).zpg
+ 
+-$(ZPKG): etc/panda-server.list $(ZPKG_DEPENDS)
+-	rm -f $(BUILD_DIR)/*.zpg
+-	$(MAKE_ZPKG) -t $(TOP) -b $(BUILD_DIR) -d $(BUILD_DIR) \
+-            $< $(PLATFORM)-$(GIT_VERSION)
++# $(ZPKG): etc/panda-server.list $(ZPKG_DEPENDS)
++# 	rm -f $(BUILD_DIR)/*.zpg
++# 	$(MAKE_ZPKG) -t $(TOP) -b $(BUILD_DIR) -d $(BUILD_DIR) \
++#             $< $(PLATFORM)-$(GIT_VERSION)
+ 
+-zpkg: $(ZPKG)
+-.PHONY: zpkg
++# zpkg: $(ZPKG)
++# .PHONY: zpkg
+ 
+ 
+ # ------------------------------------------------------------------------------
+ # Run automatic tests
+ 
+-tests: sim_server
+-	make -C tests
++# tests: sim_server
++# 	make -C tests
+ 
+-.PHONY: tests
++# .PHONY: tests
+ 
+ 
+ # ------------------------------------------------------------------------------
+diff --git a/server/Makefile b/server/Makefile
+index 0af5d78..09f7154 100644
+--- a/server/Makefile
++++ b/server/Makefile
+@@ -104,7 +104,7 @@ FORCE:
+ 
+ 
+ server: $(SRCS:.c=.o) hw_hardware.o
+-	! nm $^ | grep ' [CD] '
++#	! nm $^ | grep ' [CD] '
+ 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+ 
+ sim_server: $(SRCS:.c=.o) sw_hardware.o sim_hardware.o
+-- 
+2.39.5
+
