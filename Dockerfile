@@ -54,6 +54,7 @@ RUN yum -y upgrade && yum -y install \
 RUN yum install --enablerepo devel -y \
 	python3-sphinx \
 	rpcgen \
+	ncurses-compat-libs \
 	perl-File-Compare \
 	perl-locale \
 	screen

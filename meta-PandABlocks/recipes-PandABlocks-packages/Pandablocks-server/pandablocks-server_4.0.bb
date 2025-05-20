@@ -1,15 +1,13 @@
 SUMMARY = "This package is for fetching, building and installing the PandABlocks-server on the initramfs"
 
-#LICENCE = "MIT"
-#LIC_FILES_CHKSUM = "filr://${COREBASE}/meta-zed-board/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
-LICENSE = "CLOSED"
-LIC_FILES_CHKSUM = ""
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+FILES:${PN} = "/opt"
+
+LICENCE = "MIT"
+LIC_FILES_CHKSUM = "file://${WORKDIR}/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 
 # variable ${S} is the location of the source in the working directory
 S = "${WORKDIR}/git"
-
-FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-FILES:${PN} = "/opt"
 
 SRC_URI:append = " \
 		git://https://github.com/PandABlocks/PandABlocks-server;branch=master;protocol=https;name=pandablocks-server \
