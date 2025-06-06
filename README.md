@@ -59,7 +59,7 @@ Change the directory to ***/scratch/tmp*** recall that the "Startup a container"
 $ cd /scratch/tmp
 $ mkdir -p yocto && cd yocto
 ```
-Follow the instructions on the Xilinx Yocto Manifest page: [xilinx.yoctomanifest](https://github.com/Xilinx/yocto-manifests), to install yocto. 
+Follow the instructions on the Xilinx Yocto Manifest page: [xilinx.yoctomanifest](https://github.com/Xilinx/yocto-manifests), to install Xilinx's petalinux-yocto. 
 
 NB: 
 1. Use ***/scratch/tmp*** as the root directory for all files if the files are to persist post-container existence.
