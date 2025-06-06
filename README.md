@@ -48,7 +48,7 @@ $ podman container ls
 # list of container(s), associated image(s), tag(s), ID(s), e.t.c., to identify your container's ID
 $ podman exec -it <container_ID> /bin/bash # Assuming your host uses a bash shell, it might be /bin/sh
 ```
-You would be logged in as a pseudo-root user: ***root@<container_ID>***, now create a new user and log in as the user:
+You would be logged in as a pseudo-root user: ***root@<container_ID>***, now create a new user and log in as the user or use the yocto_user default user created by the default image:
 ```bash
 $ useradd <new_user>
 $ usermod -a -G <new_user> root
@@ -62,10 +62,15 @@ $ mkdir -p yocto && cd yocto
 Follow the instructions on the Xilinx Yocto Manifest page: [xilinx.yoctomanifest](https://github.com/Xilinx/yocto-manifests), to install Xilinx's petalinux-yocto. 
 
 NB: 
-1. Use ***/scratch/tmp*** as the root directory for all files if the files are to persist post-container existence.
+1. For Diamond build servers, use ***/scratch/tmp*** as the bind root directory for all files if the files are to persist outside of the container's lifetime.
 2. Add ***/scratch/tmp*** to the ***$PATH*** 'directory search list' within the container.
-3. Insert the following configuration macros to the ***/scratch/tmp/yocto/build/conf/local.conf*** file to limit the parallel build tasks and threads spawn during the kernel image and other boot recipe's build process:
+3. Copy the local.conf file here to ***<your-petalinux-yocto-installation-path>/build/conf/local.conf***. Otherwise, if you are adept at Yocto, customize your local.conf file, but add the following configurations:
 ```bash
+#Change the PACKAGE_CLASS to ipk format
+PACKAGE_CLASSES ?= "package_ipk"
+INITRAMFS_IMAGE = "petalinux-initramfs-image"
+INITRAMFS_IMAGE_BUNDLE = "1"
+INIT_MANAGER = "systemd"
 BB_NUMBER_THREADS="<your_pc_virtual_thread_count_or_less>"
 PARALLEL_MAKE="-j<your_pc_virtual_thread_count_or_less>"
 #On Diamond's PC - ws575, AMD thread ripper (32 cores), the above configurations are defined as:
