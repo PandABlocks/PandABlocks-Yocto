@@ -7,11 +7,11 @@ FILESEXTRAPATHS:prepend = "${THISDIR}/files:"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 
-SRC_URI:append = " \ 
+SRC_URI:append = " \
         file://COPYING.MIT \
         "
 SRC_URI[sha256sum]  = "58f55a4d9530fdf465481022a96b01aae11771a29404e0916628e675326fb663"
-PBFPGA_BOOT_VERSION = "4.0" 
+PBFPGA_BOOT_VERSION = "4.0"
 PBFPGA_BOOT_STAGING_DIR = "${TOPDIR}/PandABlocks-boot"
 BOOT_VER_MAIN ?= "${PBFPGA_BOOT_VERSION}"
 BOOT_VER_MAIN[doc] ?= "PandABlocks-FPGA boot images release version"
@@ -21,7 +21,7 @@ PROVIDES += " panda-boot pandafpga-uboot"
 
 PBFPGA_BOOT_URL[4.0] ?= "https://github.com/PandABlocks/PandABlocks-FPGA/releases/download/4.0/boot@PandABox-4.0.zip"
 #PBFPGA_BOOT_URL:XU5-ST1[4.0]
-PBFPGA_BOOT_VERSION = "4.0" 
+PBFPGA_BOOT_VERSION = "4.0"
 PBFPGA_BOOT_URL ?= "${@d.getVarFlag('PBFPGA_BOOT_URL', d.getVar('BOOT_VER_MAIN'))}"
 
 
@@ -32,7 +32,7 @@ PBFPGA_BOOT_DLDIR ?= "${DL_DIR}/PandaBlocks-FPGA/"
 BB_HASHEXCLUDE_COMMON += "PBFPGA_BOOT_STAGING_DIR"
 
 # Famous: NOTE this is a SHA256 SUM, might be wrong!!!
-PBFPGA_BOOT_CHECKSUM[4.0] ?= "58f55a4d9530fdf465481022a96b01aae11771a29404e0916628e675326fb663" 
+PBFPGA_BOOT_CHECKSUM[4.0] ?= "58f55a4d9530fdf465481022a96b01aae11771a29404e0916628e675326fb663"
 
 VALIDATE_PBFPGA_BOOT_CHECKSUM ?= '1'
 
@@ -44,9 +44,9 @@ USE_PBFPGA_BOOT_ZIP[doc] = "Flag to determine whether or not to use the pbfpga-z
 If enabled, the zip from path EXTERNAL_PBFPGA_BOOT_ZIP is copied to downloads/PandABlocks-FPGA, and extracted \
 to tmp/pandablock-boot"
 
+FILES:${PN} = "/boot"
 
 python do_fetch() {
-
     def check_pbfpga_version():
         pbfpga_path = d.getVar("PBFPGA_BOOT_SDK")
         if not os.path.exist(pbfpga_path):
@@ -103,9 +103,7 @@ python do_fetch() {
 
         cmd = d.expand("\
             cp ${DL_DIR}/${PBFPGA_BOOT_ZIP} ${WORKDIR}/; \
-            cd ${WORKDIR}/ ; \
-            #gunzip -c ${WORKDIR}/${PBFPGA_BOOT_ZIP} > ${WORKDIR}/ \
-            ")
+            cd ${WORKDIR}/ ; ")
         bb.note('Unzipping PandaBlocks-FPGA boot.bin and devicetree blob binaries')
         subprocess.check_output(cmd,shell=True)
         #with open(zipchksum, "w") as f:
@@ -119,8 +117,24 @@ python do_fetch() {
         bb.fatal("Unable to extract pbfpga tarball: %s" % str(exc))
 }
 
-do_configure(){
-    cd ${WORKDIR}
-    gunzip ${WORKDIR}/${PBFPGA_BOOT_ZIP}
+inherit deploy
 
+do_install[depends] += "unzip-native:do_populate_sysroot"
+do_install(){
+    install -d ${D}/boot
+    cd ${D}/boot
+    ${bindir}/env unzip ${WORKDIR}/${PBFPGA_BOOT_ZIP}
 }
+
+do_deploy() {
+    cd ${D}/boot
+    install -Dm 0755 * -t ${DEPLOYDIR}/pandablocks-uboot
+}
+
+addtask deploy after do_install
+
+#do_configure(){
+#    cd ${WORKDIR}
+#    gunzip ${WORKDIR}/${PBFPGA_BOOT_ZIP}
+#}
+
