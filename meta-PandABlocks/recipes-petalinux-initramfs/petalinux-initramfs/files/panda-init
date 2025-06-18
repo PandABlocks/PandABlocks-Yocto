@@ -1,0 +1,81 @@
+#!/bin/sh
+
+# Make sure dynamic libraries are findable
+/sbin/ldconfig
+set -x
+
+# proc, sys and dev were already mounted by the init script
+mkdir -p /tmp
+mount -t tmpfs tmpfs /tmp
+
+# This is called if something goes horribly wrong.
+panic()
+{
+    echo >&2 "$@"
+    echo >&2 Unable to continue
+    exec /bin/sh
+}
+
+resize_sdcard()
+{
+    mkdir -p /tmp/boot/
+    cp -r /boot/* /tmp/boot/
+    mkdir -p /mnt
+    mount /dev/mmcblk0p3 /mnt
+    cp /mnt/* /tmp/boot/
+    umount /mnt &&
+    umount /boot &&
+    {
+        cat <<EOF | sed 's/ *#.*//' | fdisk /dev/mmcblk0
+o # create new partition table
+n # create new partition
+p # primary
+1 # number 1
+  # from ssd start
+  # to ssd end
+t # type
+1 # of partition 1
+c # fat32
+p # print
+w # write
+EOF
+    } &&
+    mkfs.vfat -v -n boot /dev/mmcblk0p1 &&
+    mount /dev/mmcblk0p1 /boot &&
+    mv /tmp/boot/* /boot/  ||
+        panic 'Failed to resize sdcard'
+}
+
+create_state()
+{
+    dd if=/dev/zero of=/boot/state.ext4 count=128 bs=1M
+    mkfs.ext4 -F /boot/state.ext4
+}
+
+while [ ! -e /dev/mmcblk0p1 ]; do
+    echo "Waiting for /dev/mmcblk0p1 to appear"
+    sleep 1
+done
+
+mkdir -p /boot
+mount -t vfat /dev/mmcblk0p1 /boot  ||
+    panic 'Unable to mount boot partition!'
+
+[ -b /dev/mmcblk0p3 ] && resize_sdcard
+[ -e /boot/packages.ext4 ] || panic 'Rootfs not found'
+[ ! -e /boot/state.ext4 ] && create_state
+mkdir -p /tmp/packages /tmp/state 
+mount -t ext4 -o ro /boot/packages.ext4 /tmp/packages/ ||
+    panic 'Unable to mount packages'
+mount -t ext4 /boot/state.ext4 /tmp/state ||
+    panic 'Unable to mount state'
+mkdir -p /tmp/state/upper /tmp/state/work
+mount -t overlay -o lowerdir=/tmp/packages/,upperdir=/tmp/state/upper/,workdir=/tmp/state/work/ overlay /rootfs ||
+    panic 'Unable to mount rootfs'
+mkdir -p /rootfs/boot /rootfs/proc /rootfs/sys /rootfs/dev /rootfs/tmp
+mount --move /boot /rootfs/boot
+mount --move /proc /rootfs/proc
+mount --move /sys /rootfs/sys
+mount --move /dev /rootfs/dev
+mount --move /tmp /rootfs/tmp
+exec switch_root -c /dev/console /rootfs/ /sbin/init

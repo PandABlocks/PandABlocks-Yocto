@@ -15,14 +15,14 @@ inherit allarch
 PR = "r1"
 
 # 'pinit' - PandABlocks custom Init script
-SRC_URI = " file://pinit \
+SRC_URI = " file://panda-init \
 	    file://COPYING.MIT \
 	  "
 
 # Set script to executable
 do_install() {
   install -d ${D}/init.d
-  install -m 0755 ${WORKDIR}/pinit ${D}/init.d/10-pinit
+  install -m 0755 ${WORKDIR}/panda-init ${D}/init.d/10-panda-init
 }
 
 FILES:${PN} = "/init.d/10-pinit"
